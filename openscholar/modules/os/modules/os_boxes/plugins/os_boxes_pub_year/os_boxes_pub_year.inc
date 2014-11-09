@@ -44,14 +44,12 @@ class os_boxes_pub_year extends os_boxes_default {
     if (($block['content'] = $this->get_cache()) === FALSE) {
       $results = os_publications_publication_box('year', $this->delta, 1);
 
-      pager_default_initialize($results['total'], 1, $element = 0);
-
       $pages = array();
       for ($i = 1; $i <= $results['total']; $i++) {
         $pages[] = l($i, 'publications_box_pager/years/' . $i . '/year/' . $this->delta . '/nojs', array('attributes' => array('class' => array('use-ajax'))));
       }
 
-      $block['content'] = theme('item_list', array('items' => $results['results'], 'attributes' => array('id' => array('years'))));
+      $block['content'] = '<div id="years">' . theme('item_list', array('items' => $results['results'])) . '</div>';
       $block['content'] .= theme('item_list', array('items' => $pages));
 
       $this->set_cache($block['content']);

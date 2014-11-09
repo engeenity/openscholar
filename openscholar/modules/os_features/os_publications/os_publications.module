@@ -117,7 +117,8 @@ function os_publications_box_switcher($id, $page, $type, $delta, $ajax = 'ajax')
       $results = os_publications_publication_box('year', $delta, $page);
     }
 
-    $commands[] = ajax_command_replace('#' . $id, theme('item_list', array('items' => $results['results'], 'attributes' => array('id' => array($id)))), $page);
+    $list = theme('item_list', array('items' => $results['results']));
+    $commands[] = ajax_command_html('#' . $id, $list, $page);
     ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
   }
 }
@@ -1423,7 +1424,7 @@ function os_publications_publication_box($type, $delta, $page = 1) {
   }
 
   $total = $query->execute()->rowCount();
-  $results = $query->execute()->fetchAllAssoc('nid');
+  $results = $query->range(($page * 10) - 10, 10)->execute()->fetchAllAssoc('nid');
   $items = array();
   if ($type == 'year') {
     foreach ($results as $result) {
@@ -1431,8 +1432,6 @@ function os_publications_publication_box($type, $delta, $page = 1) {
       $items[] = $box->options['display_num'] ? $year . ' (' . $result->num_records . ')' : $year;
     }
   }
-
-  // todo: Work on the pager.
 
   return array('results' => $items, 'total' => ceil($total / 10));
 }
