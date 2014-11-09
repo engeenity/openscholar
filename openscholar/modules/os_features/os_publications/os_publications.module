@@ -111,15 +111,15 @@ function os_publications_menu_alter(&$items) {
  */
 function os_publications_box_switcher($id, $page, $type, $delta, $ajax = 'ajax') {
   if ($ajax == 'ajax') {
-    $commands = $results = array();
-
-    if ($type == 'year') {
-      $results = os_publications_publication_box('year', $delta, $page);
-    }
-
-    $list = theme('item_list', array('items' => $results['results']));
-    $commands[] = ajax_command_html('#' . $id, $list, $page);
-    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    $commands = array();
+    $results = os_publications_publication_box('year', $delta, $page);
+    $commands[] = ajax_command_html('#years', theme('item_list', array('items' => $results['results'])));
+    $page = array('#type' => 'ajax', '#commands' => $commands);
+    ajax_deliver($page);
+  }
+  else {
+    $output = t("This is some content delivered via a page load.");
+    return $output;
   }
 }
 
