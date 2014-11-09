@@ -400,7 +400,6 @@ projects[twitter_pull][patch][] = 'http://drupal.org/files/twitter_pull-twitter_
 projects[views][subdir] = "contrib"
 projects[views][version] = 3.8
 projects[views][patch][] = "https://drupal.org/files/issues/views-jquery_dialog-2125261-1.patch"
-projects[views][patch][] = "https://www.drupal.org/files/issues/store-overridden-settings-2369449-1.patch"
 
 projects[views_bulk_operations][subdir] = "contrib"
 projects[views_bulk_operations][version] = 3.0

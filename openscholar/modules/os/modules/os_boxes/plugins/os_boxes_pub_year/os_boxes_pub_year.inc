@@ -40,26 +40,20 @@ class os_boxes_pub_year extends os_boxes_default {
   public function render() {
     $block = parent::render();
     $this->set_cache_id('biblio');
+    drupal_add_library('system', 'drupal.ajax');
     if (($block['content'] = $this->get_cache()) === FALSE) {
-      $delta = 'publication_years-block';
-      list($name, $display_id) = explode('-', $delta);
-      if ($view = views_get_view($name)) {
-        if ($view->access($display_id)) {
-          $view->set_display('block');
+      $results = os_publications_publication_box('year', $this->delta, 1);
 
-          // Tie this view to this box (this tells the view to call this box's view alter).
-          $view->dom_id = "boxes-".$this->delta;
+      pager_default_initialize($results['total'], 1, $element = 0);
 
-          // Set the display num in the view (the count).
-          $arguments = $view->display_handler->get_option('arguments');
-          $arguments['biblio_year']['summary_options']['count'] = ($this->options['display_num'])?1:0;
-          $view->display_handler->override_option('arguments', $arguments);
-
-          $output = $view->execute_display($display_id);
-          $block['content'] = $output['content'];
-        }
-        $view->destroy();
+      $pages = array();
+      for ($i = 1; $i <= $results['total']; $i++) {
+        $pages[] = l($i, 'publications_box_pager/years/' . $i . '/year/' . $this->delta . '/nojs', array('attributes' => array('class' => array('use-ajax'))));
       }
+
+      $block['content'] = theme('item_list', array('items' => $results['results'], 'attributes' => array('id' => array('years'))));
+      $block['content'] .= theme('item_list', array('items' => $pages));
+
       $this->set_cache($block['content']);
     }
 

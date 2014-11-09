@@ -86,6 +86,40 @@ function os_publications_menu_alter(&$items) {
 
   // Change access callback to publications/keywords.
   $items['publications/keywords']['access callback'] = FALSE;
+
+  $items['publications_box_pager/%/%/%/%'] = array(
+    'access callback' => TRUE,
+    'page callback' => 'os_publications_box_switcher',
+    'page arguments' => array(1, 2, 3, 4)
+
+  );
+}
+
+/**
+ * Replacing with AJAX the publication box.
+ *
+ * @param $id
+ *   The publication box id.
+ * @param $page
+ *   The page number.
+ * @param string $type
+ *   The type of box.
+ * @param $delta
+ *   The delta of the box.
+ * @param string $ajax
+ *   Ajax or not ajax.
+ */
+function os_publications_box_switcher($id, $page, $type, $delta, $ajax = 'ajax') {
+  if ($ajax == 'ajax') {
+    $commands = $results = array();
+
+    if ($type == 'year') {
+      $results = os_publications_publication_box('year', $delta, $page);
+    }
+
+    $commands[] = ajax_command_replace('#' . $id, theme('item_list', array('items' => $results['results'], 'attributes' => array('id' => array($id)))), $page);
+    ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+  }
 }
 
 /**
@@ -1349,4 +1383,56 @@ function os_publications_revert_citeproc_style($name, $path = '') {
   biblio_citeproc_install_style($name, $csl);
 
   return true;
+}
+
+/**
+ * Build the publication content box.
+ *
+ * @param $type
+ *   The type of the publications: year, type etc.
+ * @param $delta
+ *   The delta of the box. This would help us when refreshing the page via ajax
+ *   request.
+ * @param $page
+ *   The current page. Starts from 1.
+ *
+ * @return array
+ *   - results: List of links.
+ *   - total: The number of pages. We meed this when we building the pager.
+ */
+function os_publications_publication_box($type, $delta, $page = 1) {
+  $query = db_select('node', 'n');
+  $query->leftJoin('biblio', 'b', 'n.vid = b.vid');
+  $query
+    ->fields('n', array('nid'))
+    ->condition('n.status', NODE_PUBLISHED)
+    ->orderBy('num_records', 'DESC')
+    ->addExpression('COUNT(n.nid)', 'num_records');
+
+  $box = boxes_box_load($delta);
+  if ($type == 'year') {
+    $query
+      ->fields('b', array('biblio_year'))
+      ->isNotNull('b.biblio_year')
+      ->groupBy('b.biblio_year');
+  }
+
+  if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
+    $query->join('og_membership', 'ogm', 'ogm.etid = n.nid');
+    $query->condition('ogm.gid', $vsite->id);
+  }
+
+  $total = $query->execute()->rowCount();
+  $results = $query->execute()->fetchAllAssoc('nid');
+  $items = array();
+  if ($type == 'year') {
+    foreach ($results as $result) {
+      $year = l($result->biblio_year, 'publications/year/' . $result->biblio_year);
+      $items[] = $box->options['display_num'] ? $year . ' (' . $result->num_records . ')' : $year;
+    }
+  }
+
+  // todo: Work on the pager.
+
+  return array('results' => $items, 'total' => ceil($total / 10));
 }
