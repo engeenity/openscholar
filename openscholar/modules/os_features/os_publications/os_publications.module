@@ -1475,7 +1475,20 @@ function os_publications_sort_publication_block($type, $id, $delta) {
 
   $content = '<div id="' . $id . '">' . theme('item_list', array('items' => $results['results'])) . '</div>';
   if ($results['total'] > 1) {
-    $content .= theme('item_list', array('items' => $pages));
+    $items = array(
+      '<<' ,
+      t('1 of @total', array('@total' => $results['total'])),
+      '>>',
+    );
+    $attributes = array(
+      'class' => 'pager',
+      'total' => $results['total'],
+      'id' => $id,
+      'i' => 1,
+      'type' => $type,
+      'delta' => $delta,
+    );
+    $content .= theme('item_list', array('items' => $items, 'attributes' => $attributes));
   }
 
   return $content;
