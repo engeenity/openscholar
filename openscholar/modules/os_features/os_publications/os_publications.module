@@ -112,14 +112,10 @@ function os_publications_menu_alter(&$items) {
 function os_publications_box_switcher($id, $page, $type, $delta, $ajax = 'ajax') {
   if ($ajax == 'ajax') {
     $commands = array();
-    $results = os_publications_publication_box('year', $delta, $page);
-    $commands[] = ajax_command_html('#years', theme('item_list', array('items' => $results['results'])));
+    $results = os_publications_publication_box($type, $delta, $page);
+    $commands[] = ajax_command_html('#' . $id, theme('item_list', array('items' => $results['results'])));
     $page = array('#type' => 'ajax', '#commands' => $commands);
     ajax_deliver($page);
-  }
-  else {
-    $output = t("This is some content delivered via a page load.");
-    return $output;
   }
 }
 
@@ -1443,4 +1439,23 @@ function os_publications_publication_box($type, $delta, $page = 1) {
   }
 
   return array('results' => $items, 'total' => ceil($total / $per_page));
+}
+
+/**
+ * Get the
+ */
+function os_publications_sort_publication_block($type, $id, $delta) {
+  $results = os_publications_publication_box($type, $delta);
+
+  $pages = array();
+  for ($i = 1; $i <= $results['total']; $i++) {
+    $pages[] = l($i, 'publications_box_pager/' . $id . '/' . $i . '/' . $type . '/' . $delta . '/nojs', array('attributes' => array('class' => array('use-ajax'))));
+  }
+
+  $content = '<div id="' . $id . '">' . theme('item_list', array('items' => $results['results'])) . '</div>';
+  if ($results['total'] > 1) {
+    $content .= theme('item_list', array('items' => $pages));
+  }
+
+  return $content;
 }

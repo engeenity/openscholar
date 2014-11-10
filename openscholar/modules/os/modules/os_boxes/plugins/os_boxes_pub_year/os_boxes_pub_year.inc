@@ -42,15 +42,7 @@ class os_boxes_pub_year extends os_boxes_default {
     $this->set_cache_id('biblio');
     drupal_add_library('system', 'drupal.ajax');
     if (($block['content'] = $this->get_cache()) === FALSE) {
-      $results = os_publications_publication_box('year', $this->delta, 1);
-
-      $pages = array();
-      for ($i = 1; $i <= $results['total']; $i++) {
-        $pages[] = l($i, 'publications_box_pager/years/' . $i . '/year/' . $this->delta . '/nojs', array('attributes' => array('class' => array('use-ajax'))));
-      }
-
-      $block['content'] = '<div id="years">' . theme('item_list', array('items' => $results['results'])) . '</div>';
-      $block['content'] .= theme('item_list', array('items' => $pages));
+      $block['content'] = os_publications_sort_publication_block('year', 'years', $this->delta);
 
       $this->set_cache($block['content']);
     }

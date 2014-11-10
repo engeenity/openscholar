@@ -70,19 +70,9 @@ class os_boxes_pub_type extends os_boxes_default {
   public function render() {
     $block = parent::render();
     $this->set_cache_id('biblio');
+    drupal_add_library('system', 'drupal.ajax');
     if (($block['content'] = $this->get_cache()) === FALSE) {
-      $results = os_publications_publication_box('type', $this->delta, 1);
-
-      $pages = array();
-      for ($i = 1; $i <= $results['total']; $i++) {
-        $pages[] = l($i, 'publications_box_pager/types/' . $i . '/type/' . $this->delta . '/nojs', array('attributes' => array('class' => array('use-ajax'))));
-      }
-
-      $block['content'] = '<div id="type">' . theme('item_list', array('items' => $results['results'])) . '</div>';
-
-      if ($results['total'] > 1) {
-        $block['content'] .= theme('item_list', array('items' => $pages));
-      }
+      $block['content'] = os_publications_sort_publication_block('type', 'types', $this->delta);
 
       $this->set_cache($block['content']);
     }
