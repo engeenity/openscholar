@@ -1416,6 +1416,16 @@ function os_publications_publication_box($type, $delta, $page = 1) {
       ->fields('b', array('biblio_year'))
       ->isNotNull('b.biblio_year')
       ->groupBy('b.biblio_year');
+
+    $links_key = 'biblio_year';
+  }
+  else if ($type == 'type') {
+    $query->join('biblio_types', 'bt', 'bt.tid = b.biblio_type');
+    $query
+      ->fields('bt', array('name'))
+      ->isNotNull('bt.name')
+      ->groupBy('bt.name');
+    $links_key = 'name';
   }
 
   if (module_exists('vsite') && $vsite = vsite_get_vsite()) {
@@ -1423,15 +1433,14 @@ function os_publications_publication_box($type, $delta, $page = 1) {
     $query->condition('ogm.gid', $vsite->id);
   }
 
+  $per_page = 10;
   $total = $query->execute()->rowCount();
-  $results = $query->range(($page * 10) - 10, 10)->execute()->fetchAllAssoc('nid');
+  $results = $query->range(($page * $per_page) - $per_page, $per_page)->execute()->fetchAllAssoc('nid');
   $items = array();
-  if ($type == 'year') {
-    foreach ($results as $result) {
-      $year = l($result->biblio_year, 'publications/year/' . $result->biblio_year);
-      $items[] = $box->options['display_num'] ? $year . ' (' . $result->num_records . ')' : $year;
-    }
+  foreach ($results as $result) {
+    $link = l($result->{$links_key}, 'publications/' . $type . '/' . $result->{$links_key});
+    $items[] = $box->options['display_num'] ? $link . ' (' . $result->num_records . ')' : $link;
   }
 
-  return array('results' => $items, 'total' => ceil($total / 10));
+  return array('results' => $items, 'total' => ceil($total / $per_page));
 }
