@@ -1416,12 +1416,23 @@ function os_publications_publication_box($type, $delta, $page = 1) {
     $links_key = 'biblio_year';
   }
   else if ($type == 'type') {
+    // todo: Handle the checked biblio types.
     $query->join('biblio_types', 'bt', 'bt.tid = b.biblio_type');
     $query
       ->fields('bt', array('name'))
       ->isNotNull('bt.name')
       ->groupBy('bt.name');
     $links_key = 'name';
+  }
+  else if ($type == 'author') {
+    $query->join('biblio_contributor', 'bc', 'bc.vid = n.vid');
+    $query->join('biblio_contributor_data', 'bcd', 'bc.cid = bcd.cid');
+    $query
+      ->fields('bcd', array('lastname'))
+      ->isNotNull('bcd.lastname')
+      ->groupBy('bcd.lastname');
+
+    $links_key = 'lastname';
   }
 
   if (module_exists('vsite') && $vsite = vsite_get_vsite()) {

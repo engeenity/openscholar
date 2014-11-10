@@ -44,26 +44,7 @@ class os_boxes_pub_ca extends os_boxes_default {
     $block = parent::render();
     $this->set_cache_id('biblio');
     if (($block['content'] = $this->get_cache()) === FALSE) {
-      $delta = 'publication_contributors-block';
-      list($name, $display_id) = explode('-', $delta);
-      if ($view = views_get_view($name)) {
-        if ($view->access($display_id)) {
-          $view->set_display('block');
-
-          // Tie this view to this box (this tells the view to call this box's view alter).
-          $view->dom_id = "boxes-" . $this->delta;
-
-          // Set the display num in the view (the count).
-          $arguments = $view->display_handler->get_option('arguments');
-          $arguments['lastname']['summary_options']['count'] = ($this->options['display_num']) ? 1 : 0;
-          $view->display_handler->override_option('arguments', $arguments);
-
-          $output = $view->execute_display('block');
-          $view->destroy();
-          $block['content'] = $output['content'];
-        }
-        $view->destroy();
-      }
+      $block['content'] = os_publications_sort_publication_block('author', 'co_authors', $this->delta);
       $this->set_cache($block['content']);
     }
 
