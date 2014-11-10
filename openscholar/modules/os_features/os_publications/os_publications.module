@@ -1442,7 +1442,17 @@ function os_publications_publication_box($type, $delta, $page = 1) {
 }
 
 /**
- * Get the
+ * Rendering HTML block to display the publication ordered by given criteria.
+ *
+ * @param $type
+ *   The type of the sorting.
+ * @param $id
+ *   The html id attribute of the item list.
+ * @param $delta
+ *   The delta of that block. Used in order to load the block settings.
+ *
+ * @return String
+ *   The rendered HTML.
  */
 function os_publications_sort_publication_block($type, $id, $delta) {
   $results = os_publications_publication_box($type, $delta);
