@@ -1,6 +1,3 @@
-/**
- * 
- */
 Drupal.behaviors.osPublications = {
   attach: function (ctx) {
     // change the author category to the role when the form is submitted
@@ -86,6 +83,43 @@ Drupal.behaviors.osPublications = {
         else {
           return Drupal.t('No URL');
         }
+      });
+    }
+  };
+
+  /**
+   * Manipulate the publications sort widgets pager.
+   */
+  Drupal.behaviors.PagerManipulation = {
+    attach: function() {
+      $(".next-page a, .prev-page a").click(function(event) {
+        var parent = $(this).parents('.pager');
+        var prev = parent.find('.prev-page');
+        var next = parent.find('.next-page');
+
+        $.ajax({
+          url: $(this).attr('href')
+        })
+        .success(function(result) {
+          console.log(result);
+          if (result.next == 'false') {
+            next.removeClass('visible').addClass('hidden');
+          }
+          else {
+            next.find('a').attr('href', result.next);
+            prev.removeClass('hidden').addClass('visible');
+          }
+
+          if (result.prev == 'false') {
+            prev.removeClass('visible').addClass('hidden');
+          }
+          else {
+            prev.find('a').attr('href', result.prev);
+            next.removeClass('hidden').addClass('visible');
+          }
+
+          $("#" + parent.attr('id')).html('<div class="item-list"><ul><li>' + result.results.join('</li><li>') + '</li></ul></div>');
+        });
       });
     }
   };

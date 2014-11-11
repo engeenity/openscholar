@@ -146,3 +146,12 @@ h1.biblio-type-prefix {
 .form-select.error {
   border: 1px solid red;
 }
+
+.pager .hidden {
+  display: none !important;
+}
+
+.pager .visible {
+  display: inline-block !important;
+}
+

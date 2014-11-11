@@ -106,17 +106,20 @@ function os_publications_menu_alter(&$items) {
  *   The type of box.
  * @param $delta
  *   The delta of the box.
- * @param string $ajax
- *   Ajax or not ajax.
  */
-function os_publications_box_switcher($id, $page, $type, $delta, $ajax = 'ajax') {
-  if ($ajax == 'ajax') {
-    $commands = array();
-    $results = os_publications_publication_box($type, $delta, $page);
-    $commands[] = ajax_command_html('#' . $id, theme('item_list', array('items' => $results['results'])));
-    $page = array('#type' => 'ajax', '#commands' => $commands);
-    ajax_deliver($page);
+function os_publications_box_switcher($id, $page, $type, $delta) {
+  $results = os_publications_publication_box($type, $delta, $page);
+  $results['next'] = url('publications_box_pager/' . $id . '/' . ($page + 1) . '/' . $type . '/' . $delta, array('absolute' => TRUE));
+  $results['prev'] = url('publications_box_pager/' . $id . '/' . ($page - 1) . '/' . $type . '/' . $delta, array('absolute' => TRUE));
+
+  if ($page == $results['total']) {
+    $results['next'] = FALSE;
   }
+  if ($page == 0) {
+    $results['prev'] = FALSE;
+  }
+
+  drupal_json_output($results);
 }
 
 /**
@@ -1468,20 +1471,28 @@ function os_publications_publication_box($type, $delta, $page = 1) {
 function os_publications_sort_publication_block($type, $id, $delta) {
   $results = os_publications_publication_box($type, $delta);
 
-  $pages = array();
-  for ($i = 1; $i <= $results['total']; $i++) {
-    $pages[] = l($i, 'publications_box_pager/' . $id . '/' . $i . '/' . $type . '/' . $delta . '/nojs', array('attributes' => array('class' => array('use-ajax'))));
-  }
-
   $content = '<div id="' . $id . '">' . theme('item_list', array('items' => $results['results'])) . '</div>';
   if ($results['total'] > 1) {
-    $items = array(
-      '<<' ,
-      t('1 of @total', array('@total' => $results['total'])),
-      '>>',
+    global $base_url;
+    // Adding assets.
+    ctools_add_css('os_publications', 'os_publications', 'misc');
+    drupal_add_js(array('baseUrl' => $base_url), array('type' => 'setting'));
+    ctools_add_js('os_publications', 'os_publications', 'misc');
+
+    $options = array(
+      'attributes' => array(
+        'class' => array('use-ajax'),
+      ),
+      'absolute' => TRUE,
     );
+    $items = array(
+      array('data' => l('<<', '', $options), 'class' => 'hidden prev-page'),
+      t('1 of @total', array('@total' => $results['total'])),
+      array('data' => l('>>', 'publications_box_pager/' . $id . '/2/' . $type . '/' . $delta, $options), 'class' => 'visible next-page'),
+    );
+
     $attributes = array(
-      'class' => 'pager',
+      'class' => 'pager os-publication',
       'total' => $results['total'],
       'id' => $id,
       'i' => 1,

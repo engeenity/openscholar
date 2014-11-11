@@ -40,7 +40,6 @@ class os_boxes_pub_year extends os_boxes_default {
   public function render() {
     $block = parent::render();
     $this->set_cache_id('biblio');
-    drupal_add_library('system', 'drupal.ajax');
     if (($block['content'] = $this->get_cache()) === FALSE) {
       $block['content'] = os_publications_sort_publication_block('year', 'years', $this->delta);
 
