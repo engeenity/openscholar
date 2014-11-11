@@ -179,16 +179,16 @@ function harvard_courses_update_7006(&$sandbox) {
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('type', 'harvard_course')
     ->propertyCondition('nid', $id, '>=')
-    ->range(0, 300)
+    ->range(0, 150)
     ->execute();
 
-  $ids_array = $result['node'];
+  $ids_array = array_keys($result['node']);
 
   if (empty($ids_array)) {
     return;
   }
 
-  node_delete_multiple(array_keys($ids_array));
+  node_delete_multiple($ids_array);
 
   $sandbox['id'] = end($ids_array);
 

@@ -6,18 +6,18 @@
  */
 class OsImporterClassValidator extends OsImporterEntityValidateBase {
 
-  public function setFieldsInfo() {
-    $fields = parent::setFieldsInfo();
+  public function publicFieldsInfo() {
+    $fields = parent::publicFieldsInfo();
 
     $fields['field_semester'] = array(
       'validators' => array(
-        'validationSemester',
+        array($this, 'validationSemester'),
       ),
     );
 
     $fields['field_offered_year__start'] = array(
       'validators' => array(
-        'validateOfferedYear',
+        array($this, 'validateOfferedYear'),
       ),
     );
 

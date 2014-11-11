@@ -622,8 +622,13 @@ function os_importer_verify_uploaded_file($form, $form_state) {
 
   // Iterate over the rows for field validation and removing empty rows.
   foreach ($rows as $key => $row) {
-    // Don't check the header.
     if (!$key) {
+      // Check the header for bad vocabularies.
+      foreach (array_diff(array_map('strtolower', $row), $mappings_diff) as $vocab) {
+        if (preg_match('@[^a-z0-9_]+@', $vocab) && !str_replace(array(' ', '.', '&', '-'), '', strtolower($vocab))) {
+          form_set_error('', t("The vocabularies you want to import doesn't contain any text."));
+        }
+      }
       continue;
     }
 

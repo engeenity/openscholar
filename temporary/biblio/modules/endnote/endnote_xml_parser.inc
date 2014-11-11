@@ -437,10 +437,18 @@ class EndNoteXMLParser {
 
   function biblio_xml_check_md5($md5) {
     static $xml_md5s = array();
+    $vsite = vsite_get_vsite();
+
     if (empty($xml_md5s)) {
-      $result = db_query("SELECT * FROM {biblio_xml} ");
-      foreach ($result as $row) {
-        $xml_md5s[$row->biblio_xml_md5] = $row->nid;
+      $query = db_select("biblio_xml", "bb");
+      $query->join("og_membership", "ogm", "bb.nid = ogm.etid");
+      $query->fields('bb', array('biblio_xml_md5', 'nid'));
+      $query->condition("ogm.entity_type","node","=");
+      $query->condition("ogm.gid",$vsite->id,"=");
+      $result = $query->execute();
+
+      while($record = $result->fetchAssoc()) {
+        $xml_md5s[$record['biblio_xml_md5']] = $record['nid'];
       }
     }
     if (isset($xml_md5s[$md5])) {

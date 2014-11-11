@@ -489,8 +489,8 @@ color: #FFF !important;
    top:16px;
 }
 
-.node-type-page #content-column .block .block-content.content ~ .contextual-links-wrapper.contextual-links-processed {
-top: -5px;
+#content-column .block .block-content.content ~ .contextual-links-wrapper.contextual-links-processed {
+top: -8px;
 }
 
 .contextual-controls-wrapper a {

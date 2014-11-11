@@ -6,12 +6,12 @@
  */
 class OsImporterFeedValidator extends OsImporterEntityValidateBase {
 
-  public function setFieldsInfo() {
-    $fields = parent::setFieldsInfo();
+  public function publicFieldsInfo() {
+    $fields = parent::publicFieldsInfo();
 
     $fields['field_url__url'] = array(
       'validators' => array(
-        'validatorUrlNotEmpty',
+        array($this, 'validatorUrlNotEmpty'),
       ),
     );
 

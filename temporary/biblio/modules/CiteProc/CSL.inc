@@ -1456,7 +1456,7 @@ class csl_if extends csl_rendering_element {
       foreach ($variables as $var) {
         // if variable is actually an element in an array in $data, set up that element
         // to be the value that is tested
-        if (strstr($var, ":")   !== FALSE) {
+        if (strstr($var, ":") !== FALSE) {
           $variable_parts = explode(":", $var);
           $value_array = $data->{$variable_parts[0]};
           if (is_array($value_array)) {

@@ -6,19 +6,19 @@
  */
 class OsImporterNewsValidator extends OsImporterEntityValidateBase {
 
-  public function setFieldsInfo() {
-    $fields = parent::setFieldsInfo();
+  public function publicFieldsInfo() {
+    $fields = parent::publicFieldsInfo();
 
     $fields['field_news_date__start'] = array(
       'validators' => array(
-        'isNotEmpty',
-        'validateOsDate',
+        array($this, 'isNotEmpty'),
+        array($this, 'validateOsDate'),
       ),
     );
 
     $fields['field_photo'] = array(
       'validators' => array(
-        'validatorNewsPhoto',
+        array($this, 'validatorNewsPhoto'),
       ),
     );
 
@@ -28,7 +28,7 @@ class OsImporterNewsValidator extends OsImporterEntityValidateBase {
   /**
    * Validating the image is in 220X220.
    */
-  public function validatorNewsPhoto($field_name, $value) {
+  public function validatorNewsPhoto($field_name, $value, EntityMetadataWrapper $wrapper, EntityMetadataWrapper $property_wrapper) {
     // Allow empty photo.
     if (empty($value)) {
       return;
@@ -37,10 +37,11 @@ class OsImporterNewsValidator extends OsImporterEntityValidateBase {
     $this->validatorPhoto($field_name, $value, 250, 250);
   }
 
-  public function isValidValue($field_name, $value, $type) {
-    if ($type == 'field_item_image') {
+  public function isValidValue($field_name, $value, EntityMetadataWrapper $wrapper, EntityMetadataWrapper $property_wrapper) {
+    $info = $property_wrapper->Info();
+    if ($info['type'] == 'field_item_image') {
       $value = array($value);
     }
-    parent::isValidValue($field_name, $value, $type);
+    parent::isValidValue($field_name, $value, $wrapper, $property_wrapper);
   }
 }

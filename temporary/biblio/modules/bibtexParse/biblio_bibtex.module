@@ -426,10 +426,17 @@ function biblio_bibtex_bibtex_map_reset($type = NULL) {
 
 function biblio_bibtex_check_md5($md5) {
   static $bibtex_md5s = array();
-  if (empty($bibtex_md5s)) {
-    $result = db_query("SELECT * FROM {biblio_bibtex} ");
-    foreach ($result as $row ) {
-      $bibtex_md5s[$row->biblio_bibtex_md5] = $row->nid;
+  $vsite = vsite_get_vsite();
+
+  if (empty($bibtex_md5s) && $vsite) {
+    $query = db_select("biblio_bibtex", "bb");
+    $query->join("og_membership", "ogm", "bb.nid = ogm.etid");
+    $query->fields('bb', array('biblio_bibtex_md5', 'nid'));
+    $query->condition("ogm.entity_type","node","=");
+    $query->condition("ogm.gid",$vsite->id,"=");
+    $result = $query->execute();
+    while($record = $result->fetchAssoc()) {
+      $bibtex_md5s[$record['biblio_bibtex_md5']] = $record['nid'];
     }
   }
   if (isset($bibtex_md5s[$md5])) {

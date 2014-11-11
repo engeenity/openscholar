@@ -86,6 +86,22 @@ class citation_distribute_service_repec extends citation_distribute_service {
     }
     $out['File-URL'] = $file_url;
 
+    // recursive wrapper for utf8_decode
+    $decoder = function($val) use (&$decoder) {
+      if (is_string($val)) {
+        return utf8_decode($val);
+      }
+      elseif (is_array($val)) {
+        foreach ($val as &$v) {
+          $v = $decoder($v);
+        }
+        return $val;
+      }
+      else {
+        return $val;
+      }
+    };
+
     // add metadata to template array
     foreach ($this->_get_type_metadata($type) as $biblio => $repec) {
       if (isset($node->{$biblio})) {
@@ -135,6 +151,11 @@ class citation_distribute_service_repec extends citation_distribute_service {
             $out[$repec] = date('Y-m', $time); //yyyy-mm
           break;
         }
+      }
+      // if we actually managed to set something, decode it
+      // repec using single-byte encoding and we're currently using double-byte
+      if (isset($out[$repec])) {
+        $out[$repec] = $decoder($out[$repec]);
       }
     }
 

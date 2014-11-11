@@ -8,24 +8,24 @@ class OsImporterEventValidator extends OsImporterEntityValidateBase {
 
   private $dates = array();
 
-  public function setFieldsInfo() {
-    $fields = parent::setFieldsInfo();
+  public function publicFieldsInfo() {
+    $fields = parent::publicFieldsInfo();
 
     $fields['field_date__start'] = array(
       'validators' => array(
-        'validateOsDate',
+        array($this, 'validateOsDate'),
       ),
     );
 
     $fields['field_date__end'] = array(
       'validators' => array(
-        'validateOsDate',
+        array($this, 'validateOsDate'),
       ),
     );
 
     $fields['registration'] = array(
       'validators' => array(
-        'validateSignUp',
+        array($this, 'validateSignUp'),
       ),
     );
 

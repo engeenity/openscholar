@@ -23,7 +23,7 @@ os[cp_layout_css] = cp-layout-map.css
   
 
   scripts[] = gking.js
-  scripts[] = jquery.jscrollpane.min.js
+  scripts[] = perfect-scrollbar.js
   
 
 ;----------// Theme Settings

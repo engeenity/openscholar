@@ -1643,47 +1643,49 @@ body.front .block-boxes-os_taxonomy_fbt .description {
     font-size:13px;
     margin-top: 5px;
     max-height: 130px;
-	overflow: auto;
+	overflow: hidden;
     }
     
- /* STYLE THE FONTPAGE TAXO WIDGET DESCRIPTION SCROLLBAR */   
-::-webkit-scrollbar {
-      width: 8px;
-} /* this targets the default scrollbar (compulsory) */
+ 
+/* SCROLLBAR STYLES FOR USE WITH perfect scroll */
+ 	.ps-container.ps-active-x > .ps-scrollbar-x-rail, .ps-container.ps-active-y > .ps-scrollbar-y-rail {
+  display: block; }
+  
+   
+  .ps-container > .ps-scrollbar-x-rail.in-scrolling {
+    background-color: #ccc;
+    }
+    
+.ps-container > .ps-scrollbar-y-rail {
+  position: absolute;
+  /* please don't change 'position' */
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  border-radius: 4px;
 
-::-webkit-scrollbar-track {
-      background-color: #db7002;
-} /* the new scrollbar will have a flat appearance with the set background color */
- 
-::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2); 
-} /* this will style the thumb, ignoring the track */
- 
-::-webkit-scrollbar-button {
-      background-color: #db7002;
-} /* optionally, you can style the top and the bottom buttons (left and right for horizontal bars) */
- 
-::-webkit-scrollbar-corner {
-      background-color: black;
-} /* if both the vertical and the horizontal bars appear, then perhaps the right bottom corner also needs to be styled */    
+  right: 0;
+  /* there must be 'right' for ps-scrollbar-y-rail */
+  width: 7px; }
+
+  .ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+    position: absolute;
+    /* please don't change 'position' */
+    background-color: #db7002;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    border-radius: 4px;
+	right: 0;
+    /* there must be 'right' for ps-scrollbar-y */
+    width: 7px; }
     
-/* SCROLLBAR STYLES FOR USE WITH jscrollpane */
-.jspTrack
-{
-    background: #b46868; /* changed from #dde */
-    position: relative;
-}
+  .ps-container > .ps-scrollbar-y-rail.in-scrolling {
+    background-color: #ccc;
+ }
+
+
  
-.jspDrag
-{
-    background: rgba(0,0,0,0.2); /* changed from #bbd */
-    position: relative;
-    top: 0;
-    left: 0;
-    cursor: pointer;
-}    
-    
-    
 body.front .block-boxes-os_taxonomy_fbt ul.termchild-applications .description {
     border-right: 2px solid #db7002;
     border-left: none;

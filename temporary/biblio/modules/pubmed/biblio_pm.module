@@ -249,11 +249,19 @@ function biblio_pm_node_load($nodes, $types) {
 function biblio_pm_check_md5($pmid, $md5) {
   static $pm_md5s = array();
   static $pm_nids = array();
+  $vsite = vsite_get_vsite();
+
   if (empty($pm_md5s)) {
-    $result = db_query("SELECT * FROM {biblio_pubmed} ");
-    foreach ($result as $row ) {
-      $pm_md5s[$row->biblio_pubmed_md5] = $row->nid;
-      $pm_nids[$row->biblio_pubmed_id] = $row->nid;
+    $query = db_select("biblio_pubmed", "bb");
+    $query->join("og_membership", "ogm", "bb.nid = ogm.etid");
+    $query->fields('bb', array('biblio_pubmed_md5', 'nid', 'biblio_pubmed_id'));
+    $query->condition("ogm.entity_type","node","=");
+    $query->condition("ogm.gid",$vsite->id,"=");
+    $result = $query->execute();
+
+    while($record = $result->fetchAssoc()) {
+      $pm_md5s[$record['biblio_pubmed_md5']] = $record['nid'];
+      $pm_nids[$record['biblio_pubmed_id']] = $record['nid'];
     }
   }
   if (isset($pm_nids[$pmid]) && isset($pm_md5s[$md5])) { // must be an exact duplicate of an existing node (return the nid)

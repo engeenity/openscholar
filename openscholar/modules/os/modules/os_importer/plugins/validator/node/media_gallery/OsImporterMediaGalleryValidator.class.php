@@ -6,12 +6,12 @@
  */
 class OsImporterMediaGalleryValidator extends OsImporterEntityValidateBase {
 
-  public function setFieldsInfo() {
-    $fields = parent::setFieldsInfo();
+  public function publicFieldsInfo() {
+    $fields = parent::publicFieldsInfo();
 
     $fields['media_gallery_rows'] = $fields['media_gallery_columns'] = array(
       'validators' => array(
-        'validateRowsColumns',
+        array($this, 'validateRowsColumns'),
       ),
     );
 

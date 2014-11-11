@@ -10,12 +10,12 @@
  */
 class OsImporterPresentationValidator extends OsImporterEntityValidateBase {
 
-  public function setFieldsInfo() {
-    $fields = parent::setFieldsInfo();
+  public function publicFieldsInfo() {
+    $fields = parent::publicFieldsInfo();
 
     $fields['field_presentation_date__start'] = array(
       'validators' => array(
-        'validateOsDate',
+        array($this, 'validateOsDate'),
       ),
     );
 
@@ -26,7 +26,7 @@ class OsImporterPresentationValidator extends OsImporterEntityValidateBase {
    * Overrides OsImporterEntityValidateBase::validateOsDate() to allow empty
    * date value.
    */
-  public function validateOsDate($field_name, $value) {
+  public function validateOsDate($field_name, $value, EntityMetadataWrapper $wrapper, EntityMetadataWrapper $property_wrapper) {
     $value = reset($value);
 
     // We allow an empty date value for this content type.

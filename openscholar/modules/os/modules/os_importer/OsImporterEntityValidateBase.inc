@@ -9,8 +9,9 @@
  * the title and nothing more.
  */
 class OsImporterEntityValidateBase extends EntityValidateBase {
-  public function getFieldsInfo() {
-    $fields = parent::getFieldsInfo();
+
+  public function publicFieldsInfo() {
+    $fields = parent::publicFieldsInfo();
 
     // Add all fields.
     foreach (field_info_instances($this->entityType, $this->bundle) as $field_name => $info) {
@@ -20,7 +21,7 @@ class OsImporterEntityValidateBase extends EntityValidateBase {
         if (isset($fields[$field_name]) && in_array('isNotEmpty', $fields[$field_name]['validators'])) {
           continue;
         }
-        $fields[$field_name]['validators'][] = 'isNotEmpty';
+        $fields[$field_name]['validators'][] = array($this, 'isNotEmpty');
       }
     }
 
@@ -50,7 +51,7 @@ class OsImporterEntityValidateBase extends EntityValidateBase {
     }
 
     // Add path validator.
-    $fields['path_alias']['validators'][] = 'validatorPath';
+    $fields['path_alias']['validators'][] = array($this, 'validatorPath');
 
     return $fields;
   }

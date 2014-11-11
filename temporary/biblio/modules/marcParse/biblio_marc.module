@@ -148,10 +148,18 @@ function biblio_marc_biblio_import($file, $terms = array(), $batch = FALSE, $ses
 
 function biblio_marc_check_md5($md5) {
   static $marc_md5s = array();
+  $vsite = vsite_get_vsite();
+
   if (empty($marc_md5s)) {
-    $result = db_query("SELECT * FROM {biblio_marc} ");
-    foreach ($result as $row) {
-      $marc_md5s[$row->biblio_marc_md5] = $row->nid;
+    $query = db_select("biblio_marc", "bb");
+    $query->join("og_membership", "ogm", "bb.nid = ogm.etid");
+    $query->fields('bb', array('biblio_marc_md5', 'nid'));
+    $query->condition("ogm.entity_type","node","=");
+    $query->condition("ogm.gid",$vsite->id,"=");
+    $result = $query->execute();
+
+    while($record = $result->fetchAssoc()) {
+      $marc_md5s[$record['biblio_marc_md5']] = $record['nid'];
     }
   }
   if (isset($marc_md5s[$md5])) {
