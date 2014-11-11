@@ -1478,7 +1478,6 @@ function _os_profiles_is_term_page($arg) {
  */
 function os_profiles_field_info_alter(&$info) {
   $info['imagefield_crop'] += array(
-    'default_token_formatter' => 'file_url_plain',
     'property_type' => 'field_item_image',
     'property_callbacks' => array('entity_metadata_field_image_callback', 'entity_metadata_field_file_callback'),
   );

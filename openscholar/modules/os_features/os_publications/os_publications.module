@@ -111,7 +111,7 @@ function os_publications_box_switcher($id, $page, $type, $delta) {
   $results = os_publications_publication_box($type, $delta, $page);
   $results['next'] = url('publications_box_pager/' . $id . '/' . ($page + 1) . '/' . $type . '/' . $delta, array('absolute' => TRUE));
   $results['prev'] = url('publications_box_pager/' . $id . '/' . ($page - 1) . '/' . $type . '/' . $delta, array('absolute' => TRUE));
-
+  $results['text'] = t('@page of @total', array('@page' => $page, '@total' => $results['total']));
   if ($page >= $results['total']) {
     $results['next'] = 'none';
   }
@@ -1406,7 +1406,6 @@ function os_publications_publication_box($type, $delta, $page = 1) {
   $query
     ->fields('n', array('nid'))
     ->condition('n.status', NODE_PUBLISHED)
-    ->orderBy('num_records', 'DESC')
     ->addExpression('COUNT(n.nid)', 'num_records');
 
   $box = boxes_box_load($delta);
@@ -1414,7 +1413,8 @@ function os_publications_publication_box($type, $delta, $page = 1) {
     $query
       ->fields('b', array('biblio_year'))
       ->isNotNull('b.biblio_year')
-      ->groupBy('b.biblio_year');
+      ->groupBy('b.biblio_year')
+      ->orderBy('biblio_year', 'DESC');
 
     $links_key = 'biblio_year';
   }
@@ -1424,7 +1424,8 @@ function os_publications_publication_box($type, $delta, $page = 1) {
     $query
       ->fields('bt', array('name'))
       ->isNotNull('bt.name')
-      ->groupBy('bt.name');
+      ->groupBy('bt.name')
+      ->orderBy('num_records', 'DESC');
     $links_key = 'name';
   }
   else if ($type == 'author') {
@@ -1433,7 +1434,8 @@ function os_publications_publication_box($type, $delta, $page = 1) {
     $query
       ->fields('bcd', array('lastname'))
       ->isNotNull('bcd.lastname')
-      ->groupBy('bcd.lastname');
+      ->groupBy('bcd.lastname')
+      ->orderBy('num_records', 'DESC');
 
     $links_key = 'lastname';
   }
@@ -1448,6 +1450,20 @@ function os_publications_publication_box($type, $delta, $page = 1) {
   $results = $query->range(($page * $per_page) - $per_page, $per_page)->execute()->fetchAllAssoc('nid');
   $items = array();
   foreach ($results as $result) {
+    if ($type == 'year') {
+      $years = array(
+        '10000' => t('Forthcoming'),
+        '10010' => t('Submitted'),
+        '10020' => t('In Preparation'),
+        '10030' => t('In Press'),
+        '10040' => t('Working Paper'),
+      );
+
+      if (!empty($years[$result->{$links_key}])) {
+        $result->{$links_key} = $years[$result->{$links_key}];
+      }
+    }
+
     $link = l($result->{$links_key}, 'publications/' . $type . '/' . $result->{$links_key});
     $items[] = $box->options['display_num'] ? $link . ' (' . $result->num_records . ')' : $link;
   }
@@ -1487,7 +1503,7 @@ function os_publications_sort_publication_block($type, $id, $delta) {
     );
     $items = array(
       array('data' => l('<<', '', $options), 'class' => 'hidden prev-page'),
-      t('1 of @total', array('@total' => $results['total'])),
+      array('data' => t('1 of @total', array('@total' => $results['total'])), 'class' => 'current-pager'),
       array('data' => l('>>', 'publications_box_pager/' . $id . '/2/' . $type . '/' . $delta, $options), 'class' => 'visible next-page'),
     );
 

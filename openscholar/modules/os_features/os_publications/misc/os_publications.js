@@ -132,6 +132,7 @@ Drupal.behaviors.osPublications = {
               }
             }
 
+            parent.find('.current-pager').html(result.text);
           $("#" + parent.attr('id')).html('<div class="item-list"><ul><li>' + result.results.join('</li><li>') + '</li></ul></div>');
         });
       });
