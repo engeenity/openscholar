@@ -440,6 +440,7 @@ function os_reader_copy_feed_item_to_news($feed, $vsite) {
   $wrapper = entity_metadata_wrapper('node', $node);
   $wrapper->{OG_AUDIENCE_FIELD}->set(array($vsite->id));
   $wrapper->author->set($user->uid);
+  $wrapper->body->set(array('value' => $feed->description, 'format' => 'filtered_html'));
 
   if ($feed->importer_type == 'news') {
     // Get the first image src.

@@ -56,6 +56,11 @@ function harvard_courses_views_default_views() {
   $handler->display->display_options['sorts']['field_timestamp_value']['id'] = 'field_timestamp_value';
   $handler->display->display_options['sorts']['field_timestamp_value']['table'] = 'field_data_field_timestamp';
   $handler->display->display_options['sorts']['field_timestamp_value']['field'] = 'field_timestamp_value';
+  /* Sort criterion: Content: Title */
+  $handler->display->display_options['sorts']['title']['id'] = 'title';
+  $handler->display->display_options['sorts']['title']['table'] = 'node';
+  $handler->display->display_options['sorts']['title']['field'] = 'title';
+  $handler->display->display_options['sorts']['title']['order'] = 'DESC';
   /* Contextual filter: OG membership: Group ID */
   $handler->display->display_options['arguments']['gid']['id'] = 'gid';
   $handler->display->display_options['arguments']['gid']['table'] = 'og_membership';

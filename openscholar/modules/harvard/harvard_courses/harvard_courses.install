@@ -202,3 +202,10 @@ function harvard_courses_update_7006(&$sandbox) {
     $sandbox['#finished'] = ($sandbox['progress'] / $sandbox['max']);
   }
 }
+
+/**
+ * Adding secondary order to the courses view: order by the course title.
+ */
+function harvard_courses_update_7007() {
+  features_revert(array('harvard_courses' => array('feeds_importer')));
+}

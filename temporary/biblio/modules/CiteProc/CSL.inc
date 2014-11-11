@@ -1691,6 +1691,7 @@ class csl_mapper {
           'interviewer'                 => ':',
           'publisher'                   => 'biblio_publisher',
           'composer'                    => ':',
+          'event'                       => 'biblio_place_published',
       ));
     }
     $vars = explode(' ', $field);
