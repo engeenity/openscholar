@@ -96,27 +96,41 @@ Drupal.behaviors.osPublications = {
         var parent = $(this).parents('.pager');
         var prev = parent.find('.prev-page');
         var next = parent.find('.next-page');
+        var clicked = $(this);
 
         $.ajax({
           url: $(this).attr('href')
         })
         .success(function(result) {
-          console.log(result);
-          if (result.next == 'false') {
-            next.removeClass('visible').addClass('hidden');
-          }
-          else {
             next.find('a').attr('href', result.next);
-            prev.removeClass('hidden').addClass('visible');
-          }
-
-          if (result.prev == 'false') {
-            prev.removeClass('visible').addClass('hidden');
-          }
-          else {
             prev.find('a').attr('href', result.prev);
-            next.removeClass('hidden').addClass('visible');
-          }
+
+            if (clicked.text() == next.find('a').text()) {
+              if (result.next == 'none') {
+                next.removeClass('visible').addClass('hidden');
+                prev.removeClass('hidden').addClass('visible');
+              }
+              else {
+                next.removeClass('hidden').addClass('visible');
+
+                if (clicked != prev) {
+                  prev.removeClass('hidden').addClass('visible');
+                }
+              }
+            }
+
+            if (clicked.text() == prev.find('a').text()) {
+              if (result.prev == 'none') {
+                prev.removeClass('visible').addClass('hidden');
+                next.removeClass('hidden').addClass('visible');
+              }
+              else {
+                prev.removeClass('hidden').addClass('visible');
+                if (clicked != next) {
+                  next.removeClass('hidden').addClass('visible');
+                }
+              }
+            }
 
           $("#" + parent.attr('id')).html('<div class="item-list"><ul><li>' + result.results.join('</li><li>') + '</li></ul></div>');
         });

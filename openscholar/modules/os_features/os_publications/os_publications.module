@@ -112,11 +112,11 @@ function os_publications_box_switcher($id, $page, $type, $delta) {
   $results['next'] = url('publications_box_pager/' . $id . '/' . ($page + 1) . '/' . $type . '/' . $delta, array('absolute' => TRUE));
   $results['prev'] = url('publications_box_pager/' . $id . '/' . ($page - 1) . '/' . $type . '/' . $delta, array('absolute' => TRUE));
 
-  if ($page == $results['total']) {
-    $results['next'] = FALSE;
+  if ($page >= $results['total']) {
+    $results['next'] = 'none';
   }
-  if ($page == 0) {
-    $results['prev'] = FALSE;
+  if ($page <= 1) {
+    $results['prev'] = 'none';
   }
 
   drupal_json_output($results);
