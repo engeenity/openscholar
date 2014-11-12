@@ -1402,10 +1402,12 @@ function os_publications_revert_citeproc_style($name, $path = '') {
  */
 function os_publications_publication_box($type, $delta, $page = 1) {
   $query = db_select('node', 'n');
-  $query->leftJoin('biblio', 'b', 'n.vid = b.vid');
+  $query->addJoin('LEFT', 'biblio', 'b', 'n.vid = b.vid');
   $query
     ->fields('n', array('nid'))
     ->condition('n.status', NODE_PUBLISHED)
+    ->condition('n.type', array('feed', 'feed_importer'), 'NOT IN')
+    ->condition('n.type', array('biblio'), 'IN')
     ->addExpression('COUNT(n.nid)', 'num_records');
 
   $box = boxes_box_load($delta);
@@ -1425,7 +1427,7 @@ function os_publications_publication_box($type, $delta, $page = 1) {
       ->fields('bt', array('name'))
       ->isNotNull('bt.name')
       ->groupBy('bt.name')
-      ->orderBy('num_records', 'DESC');
+      ->orderBy('bt.name', 'ASC');
     $links_key = 'name';
   }
   else if ($type == 'author') {
