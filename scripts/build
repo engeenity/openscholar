@@ -49,7 +49,7 @@ cd $ROOT
 # Build the profile itself.
 (
   cd openscholar
-  $DRUSH make --no-core --contrib-destination drupal-org.make .
+  $DRUSH make --no-core --contrib-destination=. drupal-org.make
   # Download the git wrapper library using the composer.
   # todo: don\'t do it on Travis-CI.
   curl -s https://getcomposer.org/installer | php
