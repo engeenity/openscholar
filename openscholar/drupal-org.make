@@ -77,7 +77,7 @@ projects[dyntextfield][subdir] = "contrib"
 projects[dyntextfield][type] = module
 projects[dyntextfield][download][type] = git
 projects[dyntextfield][download][tag] = 1.0
-projects[dyntextfield][download][url] = "git://github.com/amitaibu/dyntextfield.git"
+projects[dyntextfield][download][url] = "https://github.com/amitaibu/dyntextfield.git"
 
 projects[entity][subdir] = "contrib"
 projects[entity][version] = 1.0
@@ -320,7 +320,7 @@ projects[pathauto][version] = 1.2
 projects[pinserver][subdir] = "contrib"
 projects[pinserver][type] = module
 projects[pinserver][download][type] = git
-projects[pinserver][download][url] = "git://github.com/openscholar/pinserver.git"
+projects[pinserver][download][url] = "https://github.com/openscholar/pinserver.git"
 projects[pinserver][download][tag] = 7.x-3.4.7
 
 projects[purl][subdir] = "contrib"
